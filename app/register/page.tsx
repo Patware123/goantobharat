@@ -28,29 +28,29 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-16 bg-white rounded-xl shadow p-8">
-      <h1 className="text-2xl font-bold mb-6 text-gray-800">Create Account</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="max-w-md mx-auto mt-20 mb-20 bg-surface-container rounded-xl p-10">
+      <h1 className="text-3xl font-[family-name:var(--font-display)] font-semibold mb-8 text-tertiary">Create Account</h1>
+      <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
-          <input name="name" type="text" className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+          <label className="block text-sm font-medium text-on-surface-variant mb-2">Name</label>
+          <input name="name" type="text" className="w-full bg-surface-container-highest border-transparent rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/40 text-on-surface" placeholder="Your artisan name" />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-          <input name="email" type="email" required className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+          <label className="block text-sm font-medium text-on-surface-variant mb-2">Email</label>
+          <input name="email" type="email" required className="w-full bg-surface-container-highest border-transparent rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/40 text-on-surface" placeholder="you@example.com" />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-          <input name="password" type="password" required minLength={6} className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+          <label className="block text-sm font-medium text-on-surface-variant mb-2">Password</label>
+          <input name="password" type="password" required minLength={6} className="w-full bg-surface-container-highest border-transparent rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/40 text-on-surface" placeholder="Min. 6 characters" />
         </div>
-        {error && <p className="text-red-500 text-sm">{error}</p>}
-        <button type="submit" disabled={pending} className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 disabled:opacity-50 font-semibold">
+        {error && <p className="text-red-600 text-sm">{error}</p>}
+        <button type="submit" disabled={pending} className="w-full bg-primary text-on-primary py-3 rounded-lg hover:bg-primary-container transition duration-300 disabled:opacity-50 font-semibold shadow-[0_10px_30px_rgba(1,45,29,0.15)]">
           {pending ? "Creating..." : "Create Account"}
         </button>
       </form>
-      <p className="mt-4 text-sm text-gray-500 text-center">
-        Already have an account?{" "}
-        <Link href="/login" className="text-indigo-600 hover:underline">Sign in</Link>
+      <p className="mt-8 text-sm text-on-surface-variant text-center">
+        Already part of our community?{" "}
+        <Link href="/login" className="text-secondary hover:text-secondary-container transition font-bold">Sign in</Link>
       </p>
     </div>
   );

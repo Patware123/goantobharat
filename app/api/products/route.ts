@@ -1,12 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabaseServer } from "@/lib/db";
+import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
-import { randomBytes } from "crypto";
 
 export async function GET() {
-  const { data, error } = await supabaseServer.from("products").select("*").order("created_at", { ascending: false });
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json(data);
+  try {
+    const data = await prisma.product.findMany({
+      orderBy: { createdAt: "desc" },
+    });
+    return NextResponse.json(data);
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 }
 
 export async function POST(req: NextRequest) {
@@ -14,13 +18,30 @@ export async function POST(req: NextRequest) {
   if (!session || (session.user as { role?: string }).role !== "ADMIN")
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { name, description, price, image, stock } = await req.json();
+  const { name, description, price, image, stock, weight } = await req.json();
   if (!name || price == null)
     return NextResponse.json({ error: "Missing fields" }, { status: 400 });
 
-  const id = randomBytes(12).toString("hex");
-  const { data, error } = await supabaseServer.from("products").insert({ id, name, description, price: Number(price), image, stock: Number(stock) || 0 }).select().single();
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  try {
+    const data = await prisma.product.create({
+      data: {
+        name,
+        description,
+        basePrice: Number(price),
+        image,
+        category: "uncategorized",
+        variants: {
+          create: [{
+            weight: weight || "1kg",
+            price: Number(price),
+            stock: Number(stock) || 0,
+          }]
+        }
+      } as any
+    });
 
-  return NextResponse.json(data, { status: 201 });
+    return NextResponse.json(data, { status: 201 });
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 }

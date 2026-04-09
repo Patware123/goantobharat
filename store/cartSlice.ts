@@ -2,7 +2,8 @@ import { createSlice, createSelector, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "./index";
 
 export type CartItem = {
-  id: string;
+  id: string;         // variant id
+  productId?: string; // product id
   name: string;
   price: number;
   image?: string;
@@ -34,12 +35,13 @@ const cartSlice = createSlice({
     hydrate(state, action: PayloadAction<CartItem[]>) {
       state.items = action.payload;
     },
-    addItem(state, action: PayloadAction<Omit<CartItem, "quantity">>) {
+    addItem(state, action: PayloadAction<Omit<CartItem, "quantity"> & { quantity?: number }>) {
       const existing = state.items.find((i) => i.id === action.payload.id);
+      const qtyToAdd = action.payload.quantity || 1;
       if (existing) {
-        existing.quantity += 1;
+        existing.quantity += qtyToAdd;
       } else {
-        state.items.push({ ...action.payload, quantity: 1 });
+        state.items.push({ ...action.payload, quantity: qtyToAdd });
       }
     },
     removeItem(state, action: PayloadAction<string>) {
