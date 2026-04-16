@@ -3,8 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model User {
@@ -14,29 +15,32 @@ model User {
   phone     String?  @unique
   password  String
   role      String   @default("CUSTOMER")
+  address   String?  @default("")
+  city      String?  @default("")
+  pincode   String?  @default("")
   createdAt DateTime @default(now())
   orders    Order[]
 }
 
 model Product {
-  id          String      @id @default(cuid())
+  id          String           @id @default(cuid())
   name        String
   description String?
-  basePrice   Float       
+  basePrice   Float
   image       String?
-  category    String      @default("uncategorized")
-  isAvailable Boolean     @default(true)
-  createdAt   DateTime    @default(now())
+  category    String           @default("uncategorized")
+  isAvailable Boolean          @default(true)
+  createdAt   DateTime         @default(now())
   variants    ProductVariant[]
 }
 
 model ProductVariant {
-  id        String   @id @default(cuid())
-  productId String
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  weight    String   
-  price     Float    
-  stock     Int      @default(0)
+  id         String      @id @default(cuid())
+  productId  String
+  product    Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  weight     String
+  price      Float
+  stock      Int         @default(0)
   orderItems OrderItem[]
 }
 
@@ -44,31 +48,27 @@ model Order {
   id                String      @id @default(cuid())
   userId            String
   user              User        @relation(fields: [userId], references: [id])
-  
   shippingName      String      @default("")
   shippingPhone     String      @default("")
   address           String      @default("")
   city              String      @default("")
   pincode           String      @default("")
-
-  status            String      @default("PENDING") 
-  
-  paymentMethod     String      @default("MANUAL")  
-  paymentStatus     String      @default("PENDING") 
-  razorpayOrderId   String?     
-  razorpayPaymentId String?     
-
+  status            String      @default("PENDING")
+  paymentMethod     String      @default("MANUAL")
+  paymentStatus     String      @default("PENDING")
+  razorpayOrderId   String?
+  razorpayPaymentId String?
   totalAmount       Float       @default(0)
   createdAt         DateTime    @default(now())
   items             OrderItem[]
 }
 
 model OrderItem {
-  id               String  @id @default(cuid())
+  id               String         @id @default(cuid())
   orderId          String
-  order            Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  order            Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
   productVariantId String
   variant          ProductVariant @relation(fields: [productVariantId], references: [id])
   quantity         Int
-  priceAtPurchase  Float   
+  priceAtPurchase  Float
 }

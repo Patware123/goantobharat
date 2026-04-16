@@ -144,6 +144,7 @@ export default function AdminProductsPage() {
                   <td className="px-6 py-5 text-primary font-bold">₹{p.basePrice}</td>
                   <td className="px-6 py-5 text-on-surface-variant font-medium">{p.stock}</td>
                   <td className="px-6 py-5 flex gap-4 text-sm font-bold uppercase tracking-widest">
+                    <Link href={`/admin/products/${p.id}`} className="text-secondary hover:text-primary transition">Edit</Link>
                     <button onClick={() => handleDelete(p.id)} className="text-error hover:text-red-700 transition">Delete</button>
                   </td>
                 </tr>

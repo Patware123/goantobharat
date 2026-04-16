@@ -8,7 +8,7 @@ export default function ProfilePage() {
   const { status } = useSession();
   const router = useRouter();
 
-  const [form, setForm] = useState({ name: "", email: "", phone: "" });
+  const [form, setForm] = useState({ name: "", email: "", phone: "", address: "", city: "", pincode: "" });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [successMsg, setSuccessMsg] = useState("");
@@ -24,7 +24,7 @@ export default function ProfilePage() {
         .then((res) => res.json())
         .then((data) => {
           if (data.email) {
-            setForm({ name: data.name || "", email: data.email, phone: data.phone || "" });
+            setForm({ name: data.name || "", email: data.email, phone: data.phone || "", address: data.address || "", city: data.city || "", pincode: data.pincode || "" });
           }
           setLoading(false);
         })
@@ -41,7 +41,7 @@ export default function ProfilePage() {
     const res = await fetch("/api/profile", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: form.name, phone: form.phone }),
+      body: JSON.stringify({ name: form.name, phone: form.phone, address: form.address, city: form.city, pincode: form.pincode }),
     });
 
     setSaving(false);
@@ -132,6 +132,44 @@ export default function ProfilePage() {
                        className="w-full bg-surface-container-highest border-transparent rounded-xl px-4 py-3.5 text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/40 transition font-medium" 
                        placeholder="e.g. +91 9876543210"
                      />
+                   </div>
+
+                   <hr className="border-surface-container-highest my-8" />
+
+                   <h3 className="text-xl font-[family-name:var(--font-display)] font-semibold text-tertiary mb-6">Shipping Address</h3>
+
+                   <div>
+                     <label className="block text-xs font-bold text-on-surface-variant mb-2 uppercase tracking-widest">Full Address</label>
+                     <input
+                       type="text"
+                       value={form.address}
+                       onChange={(e) => setForm({...form, address: e.target.value})}
+                       className="w-full bg-surface-container-highest border-transparent rounded-xl px-4 py-3.5 text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/40 transition font-medium"
+                       placeholder="House no, Street, Area"
+                     />
+                   </div>
+
+                   <div className="grid grid-cols-2 gap-6">
+                     <div>
+                       <label className="block text-xs font-bold text-on-surface-variant mb-2 uppercase tracking-widest">City</label>
+                       <input
+                         type="text"
+                         value={form.city}
+                         onChange={(e) => setForm({...form, city: e.target.value})}
+                         className="w-full bg-surface-container-highest border-transparent rounded-xl px-4 py-3.5 text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/40 transition font-medium"
+                         placeholder="e.g. Mumbai"
+                       />
+                     </div>
+                     <div>
+                       <label className="block text-xs font-bold text-on-surface-variant mb-2 uppercase tracking-widest">Pincode</label>
+                       <input
+                         type="text"
+                         value={form.pincode}
+                         onChange={(e) => setForm({...form, pincode: e.target.value})}
+                         className="w-full bg-surface-container-highest border-transparent rounded-xl px-4 py-3.5 text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/40 transition font-medium"
+                         placeholder="e.g. 400001"
+                       />
+                     </div>
                    </div>
 
                    <hr className="border-surface-container-highest my-8" />

@@ -2,7 +2,6 @@
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import Link from "next/link";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -45,10 +44,7 @@ export default function LoginPage() {
           {pending ? "Signing in..." : "Sign In"}
         </button>
       </form>
-      <p className="mt-8 text-sm text-on-surface-variant text-center">
-        No account?{" "}
-        <Link href="/register" className="text-secondary hover:text-secondary-container transition font-bold">Register</Link>
-      </p>
     </div>
   );
 }
+

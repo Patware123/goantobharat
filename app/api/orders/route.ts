@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import bcrypt from "bcryptjs";
+import { randomBytes } from "crypto";
 
 export async function GET() {
   const session = await auth();
@@ -10,41 +12,37 @@ export async function GET() {
 
   if (sessionUser.role === "ADMIN") {
     try {
-      // @ts-ignore TS Prisma typings broken locally
-      const data = await prisma.order.findMany({
+      const data = await (prisma.order as any).findMany({
         orderBy: { createdAt: "desc" },
-        include: { user: true, items: { include: { variant: { include: { product: true } } } } }
-      } as any);
+        include: { user: true, items: { include: { variant: { include: { product: true } } } } },
+      });
       return NextResponse.json(data);
     } catch (error: any) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      return NextResponse.json({ error: "Failed to fetch orders" }, { status: 500 });
     }
   }
 
   try {
     let user = await prisma.user.findUnique({ where: { email: sessionUser.email! } });
     if (!user) {
-      // Sync user from Supabase to local SQLite to satisfy foreign key required for Orders
-      // @ts-ignore
-      user = await prisma.user.create({
+      user = await (prisma.user as any).create({
         data: {
           email: sessionUser.email!,
           name: sessionUser.email!.split("@")[0],
-          password: "synced_from_supabase",
-          role: "CUSTOMER"
-        } as any
+          password: await bcrypt.hash(randomBytes(16).toString("hex"), 10),
+          role: "CUSTOMER",
+        },
       });
     }
 
-    // @ts-ignore TS Prisma typings broken locally
-    const data = await prisma.order.findMany({
-      where: { userId: user.id },
+    const data = await (prisma.order as any).findMany({
+      where: { userId: user!.id },
       orderBy: { createdAt: "desc" },
-      include: { items: { include: { variant: { include: { product: true } } } } }
-    } as any);
+      include: { items: { include: { variant: { include: { product: true } } } } },
+    });
     return NextResponse.json(data);
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: "Failed to fetch orders" }, { status: 500 });
   }
 }
 
@@ -54,63 +52,84 @@ export async function POST(req: NextRequest) {
 
   const sessionUser = session.user as { email?: string; name?: string };
   let user = await prisma.user.findUnique({ where: { email: sessionUser.email! } });
-  
+
   if (!user) {
-    // @ts-ignore
-    user = await prisma.user.create({
+    user = await (prisma.user as any).create({
       data: {
         email: sessionUser.email!,
         name: sessionUser.name || sessionUser.email!.split("@")[0],
-        password: "synced_from_supabase",
-        role: "CUSTOMER"
-      } as any
+        password: await bcrypt.hash(randomBytes(16).toString("hex"), 10),
+        role: "CUSTOMER",
+      },
     });
   }
 
-  const { items, shipping, total } = await req.json();
+  const { items, shipping } = await req.json();
   if (!items?.length) return NextResponse.json({ error: "No items" }, { status: 400 });
 
-  try {
-    // SECURITY/VALIDATION: Verify that all variants actually exist locally. 
-    // Old localstorage carts might hold deleted variant IDs.
-    const variantIds = items.map((i: any) => i.variantId);
-    
-    // @ts-ignore
-    const validVariants = await prisma.productVariant.findMany({
-      where: { id: { in: variantIds } }
-    } as any);
+  // Validate quantities are positive integers
+  for (const item of items) {
+    if (!Number.isInteger(item.quantity) || item.quantity < 1) {
+      return NextResponse.json({ error: "Invalid item quantity" }, { status: 400 });
+    }
+  }
 
-    if (validVariants.length !== variantIds.length) {
-       return NextResponse.json({ 
-         error: "Some items in your cart are no longer available. Please clear your cart and try again." 
-       }, { status: 400 });
+  try {
+    const variantIds = items.map((i: any) => i.variantId);
+    let validVariants = await (prisma.productVariant as any).findMany({
+      where: { id: { in: variantIds } },
+    });
+
+    const missingItems = items.filter((i: any) => !validVariants.some((v: any) => v.id === i.variantId));
+    if (missingItems.length > 0) {
+      for (const item of missingItems) {
+        const product = await (prisma.product as any).findUnique({ where: { id: item.variantId } });
+        if (product) {
+          const newVariant = await (prisma.productVariant as any).create({
+            data: {
+              productId: product.id,
+              weight: "1kg",
+              price: product.basePrice,
+              stock: 9999
+            }
+          });
+          item.variantId = newVariant.id;
+          validVariants.push(newVariant);
+        }
+      }
     }
 
-    // @ts-ignore TS Prisma typings broken locally
-    const order = await prisma.order.create({
+    // Calculate total server-side with fallback to client-sent price if variant missing
+    const serverTotal = items.reduce((sum: number, item: any) => {
+      const dbVariant = validVariants.find((v: any) => v.id === item.variantId);
+      const price = dbVariant ? dbVariant.price : item.price;
+      return sum + price * (item.quantity ?? 0);
+    }, 0);
+
+    const order = await (prisma.order as any).create({
       data: {
-        userId: user.id,
+        userId: user!.id,
         shippingName: shipping.name,
         shippingPhone: shipping.phone,
         address: shipping.address,
         city: shipping.city,
         pincode: shipping.pincode,
-        totalAmount: total,
+        totalAmount: serverTotal,
         status: "PENDING",
         paymentMethod: "MANUAL",
         items: {
           create: items.map((i: any) => ({
             productVariantId: i.variantId,
             quantity: i.quantity,
-            priceAtPurchase: i.price
-          }))
-        }
-      } as any,
-      include: { items: true }
+            priceAtPurchase: validVariants.find((v: any) => v.id === i.variantId)?.price ?? i.price,
+          })),
+        },
+      },
+      include: { items: true },
     });
-    
+
     return NextResponse.json(order, { status: 201 });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: "Failed to place order. Please try again." }, { status: 500 });
   }
 }

@@ -1,9 +1,6 @@
-// Corporate proxy SSL bypass — must be before any fetch
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { supabaseServer } from "@/lib/db";
+import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -15,15 +12,37 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
-        const { data: user } = await supabaseServer
-          .from("users")
-          .select("*")
-          .eq("email", credentials.email)
-          .single();
-        if (!user) return null;
-        const valid = await bcrypt.compare(credentials.password as string, user.password);
-        if (!valid) return null;
-        return { id: user.id, name: user.name, email: user.email, role: user.role };
+        
+        try {
+          let user = await prisma.user.findUnique({
+            where: { email: credentials.email as string },
+          });
+
+          if (!user) {
+            const hashedPassword = await bcrypt.hash(credentials.password as string, 10);
+            user = await prisma.user.create({
+              data: {
+                email: credentials.email as string,
+                password: hashedPassword,
+                name: (credentials.email as string).split("@")[0],
+                role: "CUSTOMER",
+              }
+            });
+          } else {
+            const valid = await bcrypt.compare(credentials.password as string, user.password);
+            if (!valid) return null;
+          }
+
+          return { 
+            id: user.id, 
+            name: user.name, 
+            email: user.email, 
+            role: user.role 
+          };
+        } catch (error) {
+          console.error("Auth error:", error);
+          return null;
+        }
       },
     }),
   ],
@@ -39,3 +58,4 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   pages: { signIn: "/login" },
 });
+
