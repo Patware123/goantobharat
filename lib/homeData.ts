@@ -71,7 +71,7 @@ export const newsletterData = {
 export const footerData = {
   brand: "GaonToBharat",
   tagline: "Connecting the modern Indian to the roots of Indian agriculture. Bringing the soul of the village to your table.",
-  socials: ["𝕏", "📘", "📸"],
+  socials: ["📸"],
   contact: {
     email: "sanskar.patware@gmail.com",
     phone: "+91 86021 77475",
