@@ -17,7 +17,7 @@ export const statsData = [
 
 export const categoriesData = {
   heading: "Heritage Categories",
-  sub: "Explore the rich biodiversity of Indian agriculture, curated for the modern household.",
+  sub: "Explore the rich biodiversity of Indian agriculture, curated for the modern households.",
   items: [
     { id: 1, name: "Heritage Grains", sub: "Ancient wheat, red rice, and heirloom varieties.", image: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=600&q=80", large: true },
     { id: 2, name: "Protein Pulses", image: "https://images.unsplash.com/photo-1515543904379-3d757afe72e4?w=400&q=80", large: false },
@@ -71,7 +71,7 @@ export const newsletterData = {
 export const footerData = {
   brand: "GaonToBharat",
   tagline: "Connecting the modern Indian to the roots of Indian agriculture. Bringing the soul of the village to your table.",
-  socials: ["𝕏", "📘", "📸"],
+  socials: ["📸"],
   contact: {
     email: "sanskar.patware@gmail.com",
     phone: "+91 86021 77475",
