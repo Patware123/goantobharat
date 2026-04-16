@@ -12,28 +12,35 @@ export default function NewsletterSection() {
   };
 
   return (
-    <section className="py-14 px-4">
-      <div className="max-w-2xl mx-auto bg-green-800 rounded-3xl px-8 py-12 text-center text-white shadow-xl">
-        <h2 className="text-3xl font-bold mb-2">{newsletterData.heading}</h2>
-        <p className="text-green-200 text-sm mb-8">{newsletterData.sub}</p>
-        {done ? (
-          <p className="text-amber-300 font-semibold">🎉 You're subscribed! Welcome to the movement.</p>
-        ) : (
-          <form onSubmit={handleSubmit} className="flex gap-2 max-w-md mx-auto">
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder={newsletterData.placeholder}
-              required
-              className="flex-1 px-4 py-2.5 rounded-full text-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
-            />
-            <button type="submit" className="bg-amber-500 hover:bg-amber-600 text-white px-5 py-2.5 rounded-full font-semibold text-sm transition whitespace-nowrap">
-              {newsletterData.cta}
-            </button>
-          </form>
-        )}
-        <p className="text-green-300 text-[11px] mt-4">{newsletterData.disclaimer}</p>
+    <section className="py-24 px-4 bg-surface">
+      <div className="max-w-4xl mx-auto bg-primary rounded-[2.5rem] px-8 py-16 text-center text-on-primary shadow-2xl relative overflow-hidden">
+        {/* Subtle decorative background circle */}
+        <div className="absolute top-0 right-0 w-64 h-64 bg-primary-container/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+        
+        <div className="relative z-10">
+          <h2 className="text-4xl font-[family-name:var(--font-display)] font-semibold mb-4">{newsletterData.heading}</h2>
+          <p className="text-primary-container font-medium text-base mb-10 max-w-md mx-auto">{newsletterData.sub}</p>
+          {done ? (
+            <div className="bg-surface/20 py-4 px-6 rounded-2xl inline-block">
+              <p className="text-secondary-container font-bold text-lg">🎉 You're subscribed! Welcome to the movement.</p>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder={newsletterData.placeholder}
+                required
+                className="flex-1 px-6 py-4 rounded-xl bg-surface/10 text-on-primary placeholder:text-primary-container/70 border border-surface/20 focus:outline-none focus:border-secondary-container focus:bg-surface/20 transition backdrop-blur-sm"
+              />
+              <button type="submit" className="bg-secondary hover:bg-secondary-container text-on-secondary px-8 py-4 rounded-xl font-bold transition whitespace-nowrap shadow-lg">
+                {newsletterData.cta}
+              </button>
+            </form>
+          )}
+          <p className="text-primary-container text-[11px] mt-6 tracking-wide font-medium uppercase">{newsletterData.disclaimer}</p>
+        </div>
       </div>
     </section>
   );

@@ -10,7 +10,8 @@ datasource db {
 model User {
   id        String   @id @default(cuid())
   name      String?
-  email     String   @unique
+  email     String?  @unique
+  phone     String?  @unique
   password  String
   role      String   @default("CUSTOMER")
   createdAt DateTime @default(now())
@@ -21,29 +22,53 @@ model Product {
   id          String      @id @default(cuid())
   name        String
   description String?
-  price       Float
+  basePrice   Float       
   image       String?
-  stock       Int         @default(0)
+  category    String      @default("uncategorized")
+  isAvailable Boolean     @default(true)
   createdAt   DateTime    @default(now())
-  orderItems  OrderItem[]
+  variants    ProductVariant[]
+}
+
+model ProductVariant {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  weight    String   
+  price     Float    
+  stock     Int      @default(0)
+  orderItems OrderItem[]
 }
 
 model Order {
-  id        String      @id @default(cuid())
-  userId    String
-  user      User        @relation(fields: [userId], references: [id])
-  status    String      @default("NEW")
-  payment   String      @default("PENDING")
-  createdAt DateTime    @default(now())
-  items     OrderItem[]
+  id                String      @id @default(cuid())
+  userId            String
+  user              User        @relation(fields: [userId], references: [id])
+  
+  shippingName      String      @default("")
+  shippingPhone     String      @default("")
+  address           String      @default("")
+  city              String      @default("")
+  pincode           String      @default("")
+
+  status            String      @default("PENDING") 
+  
+  paymentMethod     String      @default("MANUAL")  
+  paymentStatus     String      @default("PENDING") 
+  razorpayOrderId   String?     
+  razorpayPaymentId String?     
+
+  totalAmount       Float       @default(0)
+  createdAt         DateTime    @default(now())
+  items             OrderItem[]
 }
 
 model OrderItem {
-  id        String  @id @default(cuid())
-  orderId   String
-  order     Order   @relation(fields: [orderId], references: [id])
-  productId String
-  product   Product @relation(fields: [productId], references: [id])
-  quantity  Int
-  price     Float
+  id               String  @id @default(cuid())
+  orderId          String
+  order            Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productVariantId String
+  variant          ProductVariant @relation(fields: [productVariantId], references: [id])
+  quantity         Int
+  priceAtPurchase  Float   
 }

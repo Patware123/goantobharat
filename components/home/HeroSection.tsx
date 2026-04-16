@@ -3,36 +3,39 @@ import { heroData } from "@/lib/homeData";
 
 export default function HeroSection() {
   return (
-    <section className="bg-white py-16 px-4">
-      <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-10">
-        <div className="flex-1 space-y-5">
-          <span className="text-xs font-bold tracking-widest text-amber-600 border border-amber-300 bg-amber-50 px-3 py-1 rounded-full">
+    <section className="bg-surface py-24 px-4 overflow-hidden relative">
+      <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-secondary-container/30 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 opacity-60"></div>
+      
+      <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-16 relative z-10">
+        <div className="flex-1 space-y-8">
+          <span className="text-xs font-bold tracking-widest text-secondary uppercase bg-secondary-container px-4 py-2 rounded-full">
             {heroData.badge}
           </span>
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight mt-3">
+          <h1 className="text-5xl md:text-7xl font-[family-name:var(--font-display)] font-semibold text-on-surface leading-[1.1]">
             {heroData.headline[0]}
-            <em className="not-italic text-green-700">{heroData.headline[1]}</em>
+            <em className="text-tertiary not-italic block">{heroData.headline[1]}</em>
             {heroData.headline[2]}
-            <span className="text-amber-600">{heroData.headline[3]}</span>
+            <span className="text-secondary">{heroData.headline[3]}</span>
           </h1>
-          <p className="text-gray-500 text-base max-w-md">{heroData.subtext}</p>
-          <div className="flex gap-3 flex-wrap">
-            <Link href="/products" className="bg-green-700 text-white px-5 py-2.5 rounded-full font-semibold hover:bg-green-800 transition text-sm">
+          <p className="text-on-surface-variant text-lg max-w-md font-medium leading-relaxed">{heroData.subtext}</p>
+          <div className="flex gap-4 flex-wrap pt-4">
+            <Link href="/products" className="bg-primary text-on-primary px-8 py-4 rounded-xl font-bold hover:bg-primary-container shadow-[0_10px_30px_rgba(1,45,29,0.15)] transition duration-300">
               {heroData.cta.primary}
             </Link>
-            <button className="border border-gray-300 text-gray-700 px-5 py-2.5 rounded-full font-semibold hover:bg-gray-50 transition text-sm flex items-center gap-2">
-              <span className="w-5 h-5 rounded-full bg-gray-200 flex items-center justify-center text-xs">▶</span>
+            <button className="bg-surface-container-highest text-on-surface px-8 py-4 rounded-xl font-bold hover:bg-surface-container-low transition duration-300 flex items-center gap-3">
+              <span className="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center text-xs">▶</span>
               {heroData.cta.secondary}
             </button>
           </div>
         </div>
-        <div className="flex-1 relative flex justify-center">
-          <div className="relative w-80 h-80 md:w-96 md:h-96 rounded-2xl overflow-hidden shadow-xl">
+        <div className="flex-1 relative flex justify-center w-full">
+          <div className="relative w-full max-w-lg aspect-[4/5] rounded-[2rem] overflow-hidden shadow-[0_30px_60px_rgba(28,28,25,0.05)] bg-surface-container-highest">
             <img src={heroData.image} alt="Farmer" className="w-full h-full object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-t from-surface-container/60 to-transparent"></div>
           </div>
-          <div className="absolute bottom-6 left-4 bg-white rounded-xl shadow-lg px-4 py-2 text-xs border border-gray-100">
-            <p className="text-green-700 font-bold">100% ORGANIC</p>
-            <p className="text-gray-400 text-[10px]">{heroData.badge2.sub}</p>
+          <div className="absolute bottom-8 left-0 md:-left-8 bg-surface/80 backdrop-blur-xl rounded-2xl p-5 shadow-lg">
+            <p className="text-tertiary font-bold tracking-widest uppercase text-sm mb-1">100% ORGANIC</p>
+            <p className="text-on-surface-variant font-medium text-xs">{heroData.badge2.sub}</p>
           </div>
         </div>
       </div>

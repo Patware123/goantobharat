@@ -72,18 +72,27 @@ export const footerData = {
   brand: "GaonToBharat",
   tagline: "Connecting the modern Indian to the roots of Indian agriculture. Bringing the soul of the village to your table.",
   socials: ["𝕏", "📘", "📸"],
+  contact: {
+    email: "support@gaontobharat.com",
+    phone: "+91 98765 43210",
+    address: "GaonToBharat Foods, Agri Hub, Rural Tech Park, India",
+  },
   columns: [
     {
-      heading: "MARKETPLACE",
-      links: ["Home & Whole", "Popular Grains", "Bulk Order", "Gift Hampers"],
-    },
-    {
       heading: "COMPANY",
-      links: ["Our Story", "Farmer Network", "Bulk Order", "Contact Us"],
+      links: [
+        { label: "About", href: "/about" },
+        { label: "Contact", href: "/legal/contact" }
+      ],
     },
     {
-      heading: "SUPPORT",
-      links: ["Privacy Policy", "Terms of Service", "Shipping Policy", "Refund Policy"],
+      heading: "LEGAL",
+      links: [
+        { label: "Privacy Policy", href: "/legal/privacy-policy" },
+        { label: "Terms & Conditions", href: "/legal/terms" },
+        { label: "Refund Policy", href: "/legal/refund" },
+        { label: "Shipping Policy", href: "/legal/shipping" }
+      ],
     },
   ],
 };
