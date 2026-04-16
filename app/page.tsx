@@ -12,10 +12,12 @@ export default function Home() {
       <HeroSection />
       <StatsBar />
       <CategoriesSection />
-      <FarmerSection />
+      {/* <FarmerSection /> */}
       <HarvestSection />
       <TestimonialsSection />
       <NewsletterSection />
     </>
   );
 }
+
+

@@ -2,13 +2,23 @@
 import { SessionProvider } from "next-auth/react";
 import { Provider } from "react-redux";
 import { useEffect } from "react";
-import { store } from "@/store";
+import { store, useAppSelector, useAppDispatch } from "@/store";
 import { hydrate, loadFromStorage } from "@/store/cartSlice";
+import { fetchProducts } from "@/store/productSlice";
 
-function CartHydrator({ children }: { children: React.ReactNode }) {
+function GlobalHydrator({ children }: { children: React.ReactNode }) {
+  const dispatch = useAppDispatch();
+  const productStatus = useAppSelector((state) => state.products.status);
+
   useEffect(() => {
-    store.dispatch(hydrate(loadFromStorage()));
-  }, []);
+    // Hydrate cart from localStorage
+    dispatch(hydrate(loadFromStorage()));
+
+    // Fetch products only once if they aren't already loading/succeeded
+    if (productStatus === "idle") {
+      dispatch(fetchProducts());
+    }
+  }, [dispatch, productStatus]);
 
   // Persist cart to localStorage on every change
   useEffect(() => {
@@ -22,12 +32,14 @@ function CartHydrator({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <SessionProvider>
       <Provider store={store}>
-        <CartHydrator>{children}</CartHydrator>
+        <GlobalHydrator>{children}</GlobalHydrator>
       </Provider>
     </SessionProvider>
   );
 }
+

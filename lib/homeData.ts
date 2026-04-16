@@ -5,14 +5,14 @@ export const heroData = {
     "Pure. Raw. Direct from Farmers. Bringing the soul of the village back to your modern kitchen table.",
   cta: { primary: "Shop Fresh Food", secondary: "Our Mission" },
   image: "https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=600&q=80",
-  badge2: { label: "100% ORGANIC", sub: "Your purchase is 1% of our total farm" },
+  badge2: { label: "100% Fresh", sub: "Your purchase is 1% of our total farm" },
 };
 
 export const statsData = [
   { icon: "👨‍🌾", title: "Direct from Farmers", sub: "Pure. Raw. Direct from Farmers." },
   { icon: "🚫", title: "No Middlemen", sub: "Fair pricing for everyone." },
-  { icon: "🌿", title: "100% Natural", sub: "No chemicals, just purity." },
-  { icon: "🚚", title: "Fast & Safe Delivery", sub: "Door to door in 48 hours." },
+  { icon: "🌿", title: "100% Natural", sub: "Direct from farmers" },
+  { icon: "🚚", title: "Fast & Safe Delivery", sub: "Door to door Delivery" },
 ];
 
 export const categoriesData = {
@@ -73,16 +73,16 @@ export const footerData = {
   tagline: "Connecting the modern Indian to the roots of Indian agriculture. Bringing the soul of the village to your table.",
   socials: ["𝕏", "📘", "📸"],
   contact: {
-    email: "support@gaontobharat.com",
-    phone: "+91 98765 43210",
-    address: "GaonToBharat Foods, Agri Hub, Rural Tech Park, India",
+    email: "sanskar.patware@gmail.com",
+    phone: "+91 86021 77475",
+    address: "GaonToBharat Foods, Harda Madhya Pradesh, India",
   },
   columns: [
     {
       heading: "COMPANY",
       links: [
         { label: "About", href: "/about" },
-        { label: "Contact", href: "/legal/contact" }
+        { label: "Contact", href: "/contact" }
       ],
     },
     {

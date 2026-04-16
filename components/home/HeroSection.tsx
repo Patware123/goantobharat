@@ -5,7 +5,7 @@ export default function HeroSection() {
   return (
     <section className="bg-surface py-24 px-4 overflow-hidden relative">
       <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-secondary-container/30 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 opacity-60"></div>
-      
+
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-16 relative z-10">
         <div className="flex-1 space-y-8">
           <span className="text-xs font-bold tracking-widest text-secondary uppercase bg-secondary-container px-4 py-2 rounded-full">
@@ -34,7 +34,7 @@ export default function HeroSection() {
             <div className="absolute inset-0 bg-gradient-to-t from-surface-container/60 to-transparent"></div>
           </div>
           <div className="absolute bottom-8 left-0 md:-left-8 bg-surface/80 backdrop-blur-xl rounded-2xl p-5 shadow-lg">
-            <p className="text-tertiary font-bold tracking-widest uppercase text-sm mb-1">100% ORGANIC</p>
+            <p className="text-tertiary font-bold tracking-widest uppercase text-sm mb-1">100% Fresh</p>
             <p className="text-on-surface-variant font-medium text-xs">{heroData.badge2.sub}</p>
           </div>
         </div>

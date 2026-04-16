@@ -4,19 +4,36 @@ import bcrypt from "bcryptjs";
 const prisma = new PrismaClient();
 
 async function main() {
-  const password = await bcrypt.hash("admin123", 10);
+  const adminPassword = await bcrypt.hash("admin123", 10);
   await prisma.user.upsert({
     where: { email: "admin@gaontobharat.com" },
     update: {},
     create: {
       email: "admin@gaontobharat.com",
       name: "Admin",
-      password,
+      password: adminPassword,
       role: "ADMIN"
     }
   });
+  console.log("✓ Admin — admin@gaontobharat.com / admin123");
+
+  const customerPassword = await bcrypt.hash("customer123", 10);
+  await prisma.user.upsert({
+    where: { email: "customer@gaontobharat.com" },
+    update: {},
+    create: {
+      email: "customer@gaontobharat.com",
+      name: "Test Customer",
+      password: customerPassword,
+      role: "CUSTOMER"
+    }
+  });
+  console.log("✓ Customer — customer@gaontobharat.com / customer123");
 
   // clear existing to avoid dupes via random IDs
+  await prisma.orderItem.deleteMany();
+  await prisma.order.deleteMany();
+  await prisma.productVariant.deleteMany();
   await prisma.product.deleteMany();
 
   const products = [
